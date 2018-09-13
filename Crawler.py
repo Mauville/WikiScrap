@@ -1,3 +1,43 @@
+import requests
+import bs4
+#TODO import json
+import win_unicode_console
+
+win_unicode_console.enable()
+
+url = "http://www.james-camerons-avatar.wikia.com/api/v1/Articles/List?limit=921"
+bigdata = requests.get(url)
+jbigdata = bigdata.json()
+# this is a triple nested dict {'items': [{'id': 24739, 'title': "'Awvea Tsamsiyu Armor", 'url': '/wiki/%27Awvea_Tsamsiyu_Armor', 'ns': 0},
+entries = 920
+
+while entries != -1:
+
+    title = jbigdata["items"][entries]["title"]
+    baseurl = jbigdata["items"][entries]["url"]
+    fullurl = "http://www.james-camerons-avatar.wikia.com/" + baseurl
+    finallinks = ""
+
+    page = requests.get(fullurl) # Get page to obtain URLS
+    soup = bs4.BeautifulSoup(page.text, "lxml")
+
+    for link in soup.find_all('a'):
+        rawlinks = link.get('href')
+        try:
+            if "//" not in rawlinks and "#" not in rawlinks and "/wiki/Special:" not in rawlinks: # Removes special links, tags and // links
+                finallinks += (rawlinks + "\n")
+        except TypeError: # unknown error, must be passed to continue
+            pass
+    #rate of 2.5 results per second
+    print("#" + str(entries))
+    print("Title: " +  title)
+    print("Article URL:" + fullurl)
+    print("Links: \n" + finallinks)
+    print("#" + str(entries))
+    print("*****")
+    entries -= 1
+
+
 # OBEJCTIVE:
     #  get all hyperlinks in all articles from a wikia
 
@@ -43,16 +83,3 @@
     #open data.json
     #write data2add
     #close data.json
-#
-
-import requests
-#from bs4 import beautifulsoup
-
-url = "http://www.james-camerons-avatar.wikia.com/api/v1/Articles/List?limit=961"
-bigdata = requests.get(url)
-print (bigdata)
-
-
-
-
-
