@@ -46,7 +46,7 @@
 #
 
 import requests
-#from bs4 import beautifulsoup
+from bs4 import beautifulsoup
 
 url = "http://www.james-camerons-avatar.wikia.com/api/v1/Articles/List?limit=961"
 bigdata = requests.get(url)
